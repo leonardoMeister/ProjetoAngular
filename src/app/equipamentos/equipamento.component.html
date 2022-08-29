@@ -1,0 +1,124 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-10 col-lg-11 ms-auto">
+
+            <div class="text-center text-md-start">
+                <h1 class="fw-bold text-primary">Equipamentos</h1>
+
+                <div class="d-grip d-md-block gap-2">
+
+                    <button type="button" class="btn btn-primary me-md-1 col-md-2 mt-4s" (click)="gravar(modal)">
+                        <i class="pi pi-user-plus me-2"></i>Novo
+                    </button>
+                    <a role="button" class=" btn btn-outline-primary col-md-2" routerLink="/painel">
+                        <i class="pi pi-sign-out me-2"> </i>Voltar
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="mt-4">
+                <table class="table table-light table-striped table-hover">
+
+                    <thead class="thead-dark text-center">
+                        <tr>
+                            <th>Nome</th>
+                            <th>Numero Serie</th>
+                            <th>Preço</th>
+                            <th>Data Fabricação</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="text-center">
+
+                        <tr *ngFor="let equipamento of(equipamentos$ | async)">
+                            <td>{{ equipamento.nome }}</td>
+                            <td>{{ equipamento.numeroSerie }}</td>
+                            <td>{{ equipamento.preco }}</td>
+                            <td>{{ equipamento.dataFabricacao }}</td>
+
+                            <td class="d-grid d-md-block ">
+
+                                <button type="button" class="btn btn-primary me-0 me-md-1 mb-1 mb-md-auto"
+                                    (click)="gravar(modal, equipamento)">
+                                    <i class="pi pi-user-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-danger " (click)="excluir(equipamento)">
+                                    <i class="pi pi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ng-template #modal let-modal>
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">{{ tituloModal }} de equipamentos</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('fechar')"></button>
+    </div>
+    <div class="modal-body">
+
+        <form [formGroup]="form" (ngSubmit)="modal.close('gravar')">
+
+
+            <div class="form-group mb-3">
+                <label for="nome" class="form-label">Nome do equipamento</label>
+                <input class="form-control" formControlName="nome" id="nome" name="nome"
+                    placeholder="Digite o nome do equipamento" type="text">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="numeroSerie" class="form-label">Numero Serie.</label>
+                <input class="form-control" formControlName="numeroSerie" id="numeroSerie" name="numeroSerie"
+                    placeholder="Digite o Numero Serie." type="text">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="preco" class="form-label">Preço do equipamento</label>
+                <input class="form-control" formControlName="preco" id="preco" name="preco"
+                    placeholder="Digite o preco do equipamento" type="number">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="dataFabricacao" class="form-label">Data Fabricacao do equipamento</label>
+                <input class="form-control" formControlName="dataFabricacao" id="dataFabricacao" name="dataFabricacao"
+                    type="date">
+            </div>
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary col-md-3"
+                    (click)="modal.dismiss('fechar')">Cancelar</button>
+                <button type="submit" class="btn btn-primary col-md-3">Gravar</button>
+            </div>
+        </form>
+
+    </div>
+
+
+</ng-template>
