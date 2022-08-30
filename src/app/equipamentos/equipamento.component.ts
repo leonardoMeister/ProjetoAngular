@@ -1,9 +1,12 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { Equipamento } from './models/equipamento.model';
 import { EquipamentoService } from './service/equipamento.service';
+
+import { CurrencyPipe } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-equipamento',
@@ -17,18 +20,31 @@ export class EquipamentoComponent implements OnInit {
     constructor(
         private equipamentoService: EquipamentoService,
         private fb: FormBuilder,
-        private modalService: NgbModal
-    ) { }
+        private modalService: NgbModal,
+        private currencyPipe: CurrencyPipe,
+        private toastr: ToastrService
+    ) {
+        this.toastr.success("sucesso","Success");
+     }
 
     ngOnInit(): void {
         this.equipamentos$ = this.equipamentoService.selecionarTodos();
         this.form = this.fb.group({
             id: new FormControl(""),
-            nome: new FormControl(""),
+            nome: new FormControl("", Validators.required),
             numeroSerie: new FormControl(""),
-            preco: new FormControl(""),
+            preco: ['', Validators.required],
             dataFabricacao: new FormControl("")
         })
+
+        //user pipe to display currency
+        this.form.valueChanges.subscribe(myForm => {
+            if (myForm.preco) {
+                this.form.patchValue({
+                    preco: this.currencyPipe.transform(myForm.preco.replace(/\D/g, '').replace(/^0+/, ''), 'USD', 'symbol', '1.0-0')
+                }, { emitEvent: false });
+            }
+        });
     }
 
     get id() { return this.form.get('id') }
@@ -48,10 +64,23 @@ export class EquipamentoComponent implements OnInit {
         try {
             await this.modalService.open(modal).result;
 
-            if (equipamento) await this.equipamentoService.editar(this.form.value);
-            else await this.equipamentoService.inserir(this.form.value);
+            if (this.form.valid) {
+                if (equipamento) await this.equipamentoService.editar(this.form.value);
+                else await this.equipamentoService.inserir(this.form.value);
 
-            console.log("O equipamento foi salvo com sucesso");
+                this.toastr.success("<h1>sucesso</h1>","Success",
+                {
+                    timeOut:2000,
+                    closeButton:true,
+                    disableTimeOut:false,
+                    tapToDismiss:true,
+                    progressBar:true
+
+                })
+            }else{
+
+            }
+
         } catch (err) {
             console.log(err);
         }

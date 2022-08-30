@@ -5,7 +5,10 @@ import { EquipamentoRoutingModule } from './equipamento-routing.module';
 import { EquipamentoComponent } from './equipamento.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CurrencyPipe } from '@angular/common';
 
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -15,7 +18,10 @@ import { ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     NgbModule,
     ReactiveFormsModule,
-    EquipamentoRoutingModule
-  ]
+    EquipamentoRoutingModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot()
+  ],
+  providers: [CurrencyPipe]
 })
 export class EquipamentoModule { }
