@@ -5,3 +5,5 @@
 .nav-link:hover{
   color: #0d4496 !important;
 }
+
+@import '~ngx-toastr/toastr.css';

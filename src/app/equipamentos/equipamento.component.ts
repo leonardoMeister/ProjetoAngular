@@ -23,9 +23,7 @@ export class EquipamentoComponent implements OnInit {
         private modalService: NgbModal,
         private currencyPipe: CurrencyPipe,
         private toastr: ToastrService
-    ) {
-        this.toastr.success("sucesso","Success");
-     }
+    ) { }
 
     ngOnInit(): void {
         this.equipamentos$ = this.equipamentoService.selecionarTodos();
@@ -68,17 +66,23 @@ export class EquipamentoComponent implements OnInit {
                 if (equipamento) await this.equipamentoService.editar(this.form.value);
                 else await this.equipamentoService.inserir(this.form.value);
 
-                this.toastr.success("<h1>sucesso</h1>","Success",
-                {
-                    timeOut:2000,
-                    closeButton:true,
-                    disableTimeOut:false,
-                    tapToDismiss:true,
-                    progressBar:true
-
-                })
-            }else{
-
+                this.toastr.success("Registro Salvo.", "Success",
+                    {
+                        timeOut: 2000,
+                        closeButton: true,
+                        disableTimeOut: false,
+                        tapToDismiss: true,
+                        progressBar: true
+                    })
+            } else {
+                this.toastr.warning("Não foi possival salvar o registro.", "Falhar",
+                    {
+                        timeOut: 2000,
+                        closeButton: true,
+                        disableTimeOut: false,
+                        tapToDismiss: true,
+                        progressBar: true
+                    })
             }
 
         } catch (err) {
