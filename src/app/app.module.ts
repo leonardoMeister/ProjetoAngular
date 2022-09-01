@@ -40,10 +40,10 @@ registerLocaleData(ptBr);
         AngularFireModule.initializeApp(environment.firebase),
         AngularFireAuthModule,
         AngularFirestoreModule,
-
+        FuncionarioModule,
         DepartamentoModule,
         EquipamentoModule,
-        FuncionarioModule
+
     ],
     providers:
         [

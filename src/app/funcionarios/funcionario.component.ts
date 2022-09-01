@@ -1,17 +1,17 @@
-import { CurrencyPipe } from '@angular/common';
-import { Component, OnInit, TemplateRef } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ToastrService } from 'ngx-toastr';
-import { Observable } from 'rxjs';
-import { DepartamentoService } from '../departamentos/services/departamento.service';
-import { Funcionario } from './models/funcionario.model';
-import { FuncionarioService } from './services/funcionario.service';
+import { CurrencyPipe } from "@angular/common";
+import { Component, OnInit, TemplateRef } from "@angular/core";
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { ToastrService } from "ngx-toastr";
+import { Observable } from "rxjs";
+import { Funcionario } from "./models/funcionario.model";
+import { FuncionarioService } from "./services/funcionario.service";
 
 @Component({
     selector: 'app-funcionario',
     templateUrl: './funcionario.component.html'
 })
+
 export class FuncionarioComponent implements OnInit {
 
     public funcionarios$: Observable<Funcionario[]>;
@@ -23,7 +23,6 @@ export class FuncionarioComponent implements OnInit {
         private modalService: NgbModal,
         private currencyPipe: CurrencyPipe,
         private toastr: ToastrService,
-        private departamentoService: DepartamentoService
     ) { }
 
     ngOnInit(): void {
@@ -44,6 +43,7 @@ export class FuncionarioComponent implements OnInit {
     get funcao() { return this.form.get('funcao') }
     get departamentoId() { return this.form.get('departamentoId') }
     get departamento() { return this.form.get('departamento') }
+    get tituloModal() { return (this.id?.value) ? "Atualização" : "Cadastro"; }
 
     public async gravar(modal: TemplateRef<any>, funcionario?: Funcionario) {
         this.form.reset();
