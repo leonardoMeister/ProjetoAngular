@@ -39,7 +39,9 @@ export class EquipamentoComponent implements OnInit {
         this.form.valueChanges.subscribe(myForm => {
             if (myForm.preco) {
                 this.form.patchValue({
-                    preco: this.currencyPipe.transform(myForm.preco.replace(/\D/g, '').replace(/^0+/, ''), 'USD', 'symbol', '1.0-0')
+                    preco: this.currencyPipe.
+
+                    transform(myForm.preco.replace(/\D/g, '').replace(/^0+/, ''), 'BRL', 'symbol', '1.0-0')
                 }, { emitEvent: false });
             }
         });

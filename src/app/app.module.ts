@@ -7,11 +7,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { environment } from 'src/environments/environment';
 
-import {ToastrModule} from 'ngx-toastr';
-
-import {AngularFireModule} from '@angular/fire/compat';
-import {AngularFireAuthModule} from '@angular/fire/compat/auth';
-import {AngularFirestoreModule} from '@angular/fire/compat/firestore';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { LoginComponent } from './auth/login/login.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthenticationService } from './auth/services/authentication.service';
@@ -20,26 +18,39 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { DepartamentoModule } from './departamentos/departamento.module';
 import { EquipamentoModule } from './equipamentos/equipamento.module';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    PainelComponent,
-    NavbarComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    ReactiveFormsModule,
-    NgbModule,
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFireAuthModule,
-    AngularFirestoreModule,
+import ptBr from '@angular/common/locales/pt';
+import { registerLocaleData } from '@angular/common';
+import { LOCALE_ID, DEFAULT_CURRENCY_CODE } from "@angular/core";
+import { FuncionarioModule } from './funcionarios/funcionario.module';
 
-    DepartamentoModule,
-    EquipamentoModule
-  ],
-  providers: [AuthenticationService],
-  bootstrap: [AppComponent]
+registerLocaleData(ptBr);
+
+@NgModule({
+    declarations: [
+        AppComponent,
+        LoginComponent,
+        PainelComponent,
+        NavbarComponent
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        ReactiveFormsModule,
+        NgbModule,
+        AngularFireModule.initializeApp(environment.firebase),
+        AngularFireAuthModule,
+        AngularFirestoreModule,
+
+        DepartamentoModule,
+        EquipamentoModule,
+        FuncionarioModule
+    ],
+    providers:
+        [
+            AuthenticationService,
+            {provide: LOCALE_ID, useValue:"pt"},
+            {provide: DEFAULT_CURRENCY_CODE, useValue:"BRL"}
+        ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
