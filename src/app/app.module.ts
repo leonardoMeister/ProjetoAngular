@@ -15,13 +15,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AuthenticationService } from './auth/services/authentication.service';
 import { PainelComponent } from './painel/painel.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { DepartamentoModule } from './departamentos/departamento.module';
-import { EquipamentoModule } from './equipamentos/equipamento.module';
 
 import ptBr from '@angular/common/locales/pt';
 import { registerLocaleData } from '@angular/common';
 import { LOCALE_ID, DEFAULT_CURRENCY_CODE } from "@angular/core";
-import { FuncionarioModule } from './funcionarios/funcionario.module';
+
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 registerLocaleData(ptBr);
 
@@ -35,14 +35,16 @@ registerLocaleData(ptBr);
     imports: [
         BrowserModule,
         AppRoutingModule,
+        BrowserAnimationsModule,
         ReactiveFormsModule,
         NgbModule,
         AngularFireModule.initializeApp(environment.firebase),
         AngularFireAuthModule,
         AngularFirestoreModule,
-        FuncionarioModule,
-        DepartamentoModule,
-        EquipamentoModule,
+
+        ToastrModule.forRoot({
+            positionClass:'toast-bottom-right'
+        })
 
     ],
     providers:

@@ -79,28 +79,33 @@
 
 
             <div class="form-group mb-3">
-                <label for="nome" class="form-label">Nome do equipamento</label>
+                <label for="nome" class="form-label">Nome</label>
                 <input class="form-control" formControlName="nome" id="nome" name="nome"
-                    placeholder="Digite o nome do equipamento" type="text">
+                    placeholder="Digite o nome do Funcionario" type="text">
             </div>
 
             <div class="form-group mb-3">
-                <label for="numeroSerie" class="form-label">Numero Serie.</label>
-                <input class="form-control" formControlName="numeroSerie" id="numeroSerie" name="numeroSerie"
-                    placeholder="Digite o Numero Serie." type="text">
+                <label for="email" class="form-label">Email</label>
+                <input class="form-control" formControlName="email" id="email" name="email"
+                    placeholder="Digite o email do Funcionario" type="text">
             </div>
 
             <div class="form-group mb-3">
-                <label for="preco" class="form-label">Preço do equipamento</label>
-                <input matInput class="form-control" formControlName="preco" id="preco" name="preco">
+                <label for="funcao" class="form-label">Função</label>
+                <input class="form-control" formControlName="funcao" id="funcao" name="funcao"
+                    placeholder="Digite o funcao do Funcionario" type="text">
             </div>
 
             <div class="form-group mb-3">
-                <label for="dataFabricacao" class="form-label">Data Fabricacao do equipamento</label>
-                <input class="form-control" formControlName="dataFabricacao" id="dataFabricacao" name="dataFabricacao"
-                    type="date">
-            </div>
+                <label for="departamentoId" class="form-label">Departamento</label>
 
+                <ng-select formControlName="departamentoId" [clearable]="false" [searchable]="false">
+                    <ng-option *ngFor="let departamento of (departamentos$ | async)" [value]="departamento.id" >
+                        {{ departamento.nome }}
+                    </ng-option>
+                </ng-select>
+
+            </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-primary col-md-3"
@@ -113,4 +118,3 @@
 
 
 </ng-template>
-

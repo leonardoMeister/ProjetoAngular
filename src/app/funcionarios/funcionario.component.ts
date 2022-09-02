@@ -4,6 +4,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms"
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
+import { Departamento } from "../departamentos/models/departamento.model";
+import { DepartamentoService } from "../departamentos/services/departamento.service";
 import { Funcionario } from "./models/funcionario.model";
 import { FuncionarioService } from "./services/funcionario.service";
 
@@ -15,10 +17,12 @@ import { FuncionarioService } from "./services/funcionario.service";
 export class FuncionarioComponent implements OnInit {
 
     public funcionarios$: Observable<Funcionario[]>;
+    public departamentos$: Observable<Departamento[]>;
     public form: FormGroup;
 
     constructor(
         private funcionarioService: FuncionarioService,
+        private departamentoService:DepartamentoService,
         private fb: FormBuilder,
         private modalService: NgbModal,
         private currencyPipe: CurrencyPipe,
@@ -35,7 +39,11 @@ export class FuncionarioComponent implements OnInit {
             departamentoId: new FormControl(""),
             departamento: new FormControl("")
         })
+        this.funcionarios$ = this.funcionarioService.selecionarTodos();
+        this.departamentos$ = this.departamentoService.selecionarTodos();
     }
+
+
 
     get id() { return this.form.get('id') }
     get nome() { return this.form.get('nome') }
@@ -49,7 +57,13 @@ export class FuncionarioComponent implements OnInit {
         this.form.reset();
 
         if (funcionario) {
-            this.form.setValue(funcionario);
+            const departamento = funcionario.departamento ? funcionario.departamento : null;
+            const funcionarioDepartamento = {
+                ...funcionario,
+                departamento
+            }
+
+            this.form.setValue(funcionarioDepartamento);
         }
 
         try {
