@@ -1,5 +1,5 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { Departamento } from './models/departamento.model';
@@ -24,9 +24,11 @@ export class DepartamentoComponent implements OnInit {
         this.departamentos$ = this.departamentoService.selecionarTodos();
         this.form = this.fb.group({
             id: new FormControl(""),
-            nome: new FormControl(""),
-            telefone: new FormControl("")
+            nome: new FormControl("", [Validators.required, Validators.minLength(3)]),
+            telefone: new FormControl("", [Validators.required])
         });
+
+
     }
 
     get nome() {
@@ -35,10 +37,10 @@ export class DepartamentoComponent implements OnInit {
     get telefone() {
         return this.form.get('telefone')
     }
-    get tituloModal(){
+    get tituloModal() {
         return (this.id?.value) ? "Atualização" : "Cadastro";
     }
-    get id(){
+    get id() {
         return this.form.get("id");
     }
 
@@ -54,17 +56,22 @@ export class DepartamentoComponent implements OnInit {
 
             await this.modalService.open(modal).result;
 
-            if (departamento) await this.departamentoService.editar(this.form.value);
-            else await this.departamentoService.inserir(this.form.value);
+            if (this.form.valid) {
 
-            console.log("O departamento foi salvo com sucesso!");
+                if (departamento) await this.departamentoService.editar(this.form.value);
+                else await this.departamentoService.inserir(this.form.value);
+
+                console.log("O departamento foi salvo com sucesso!");
+            }else{
+                
+            }
 
 
         } catch (err) {
 
         }
     }
-    public excluir(registro:Departamento){
+    public excluir(registro: Departamento) {
         this.departamentoService.excluir(registro);
     }
 }
