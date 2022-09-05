@@ -1,9 +1,11 @@
 import { CurrencyPipe } from "@angular/common";
 import { Component, OnInit, TemplateRef } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
+import { AuthenticationService } from "../auth/services/authentication.service";
 import { Departamento } from "../departamentos/models/departamento.model";
 import { DepartamentoService } from "../departamentos/services/departamento.service";
 import { Funcionario } from "./models/funcionario.model";
@@ -25,32 +27,37 @@ export class FuncionarioComponent implements OnInit {
         private departamentoService: DepartamentoService,
         private fb: FormBuilder,
         private modalService: NgbModal,
-        private currencyPipe: CurrencyPipe,
         private toastr: ToastrService,
+        private authService: AuthenticationService,
+        private router: Router
     ) { }
 
     ngOnInit(): void {
         this.funcionarios$ = this.funcionarioService.selecionarTodos();
         this.form = this.fb.group({
-            id: new FormControl(""),
-            nome: new FormControl("", [Validators.required,Validators.minLength(3)]),
-            email: new FormControl("",[Validators.required, Validators.email]),
-            funcao: new FormControl("",[Validators.required, Validators.minLength(5)]),
-            departamentoId: new FormControl("",Validators.required),
-            departamento: new FormControl("")
-        })
+            funcionario: new FormGroup({
+                id: new FormControl(""),
+                nome: new FormControl("", [Validators.required, Validators.minLength(3)]),
+                email: new FormControl("", [Validators.required, Validators.email]),
+                funcao: new FormControl("", [Validators.required, Validators.minLength(5)]),
+                departamentoId: new FormControl("", Validators.required),
+                departamento: new FormControl("")
+            }),
+            senha: new FormControl("", [Validators.required, Validators.minLength(8)])
+        });
         this.funcionarios$ = this.funcionarioService.selecionarTodos();
         this.departamentos$ = this.departamentoService.selecionarTodos();
     }
 
 
 
-    get id() { return this.form.get('id') }
-    get nome() { return this.form.get('nome') }
-    get email() { return this.form.get('email') }
-    get funcao() { return this.form.get('funcao') }
-    get departamentoId() { return this.form.get('departamentoId') }
-    get departamento() { return this.form.get('departamento') }
+    get id() { return this.form.get('funcionario.id') }
+    get nome() { return this.form.get('funcionario.nome') }
+    get email() { return this.form.get('funcionario.email') }
+    get funcao() { return this.form.get('funcionario.funcao') }
+    get departamentoId() { return this.form.get('funcionario.departamentoId') }
+    get departamento() { return this.form.get('funcionario.departamento') }
+    get senha() { return this.form.get('senha') }
     get tituloModal() { return (this.id?.value) ? "Atualização" : "Cadastro"; }
 
     public async gravar(modal: TemplateRef<any>, funcionario?: Funcionario) {
@@ -63,15 +70,24 @@ export class FuncionarioComponent implements OnInit {
                 departamento
             }
 
-            this.form.setValue(funcionarioDepartamento);
+            this.form.get("funcionario")?.setValue(funcionarioDepartamento);
         }
 
         try {
             await this.modalService.open(modal).result;
 
             if (this.form.valid) {
-                if (funcionario) await this.funcionarioService.editar(this.form.value);
-                else await this.funcionarioService.inserir(this.form.value);
+                if (funcionario) await this.funcionarioService.editar(this.form.get("funcionario")?.value);
+                else {
+                    await this.authService.cadastrar(this.email?.value, this.senha?.value)
+
+                     this.funcionarioService.inserir(this.form.get("funcionario")?.value)
+                        .then(() => {
+                            this.authService.logout();
+                            this.router.navigate(["/login"])
+                        });
+
+                }
 
                 this.menssagemSucesso();
             } else {
