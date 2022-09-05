@@ -81,36 +81,60 @@
             <div class="form-group mb-3">
                 <label for="nome" class="form-label">Nome</label>
                 <input class="form-control" formControlName="nome" id="nome" name="nome"
-                    placeholder="Digite o nome do Funcionario" type="text">
+                    placeholder="Digite o nome do Funcionario" type="text"
+                    [ngClass]="(nome?.invalid && (nome?.dirty || nome?.valueChanges))? 'is-invalid':'is-valid'">
+
+                <div class="invalid-feedback" *ngIf="nome?.invalid && (nome?.dirty || nome?.valueChanges)">
+                    <p *ngIf="this.nome?.errors?.['required']">Nome Necessario</p>
+                    <p *ngIf="this.nome?.errors?.['minlength']">Nome Deve possuir no minimo 3 letras</p>
+                </div>
             </div>
 
             <div class="form-group mb-3">
                 <label for="email" class="form-label">Email</label>
                 <input class="form-control" formControlName="email" id="email" name="email"
-                    placeholder="Digite o email do Funcionario" type="text">
+                    placeholder="Digite o email do Funcionario" type="text"
+                    [ngClass]="(email?.invalid && (email?.dirty || email?.valueChanges))? 'is-invalid':'is-valid'">
+
+                <div class="invalid-feedback" *ngIf="email?.invalid && (email?.dirty || email?.valueChanges)">
+                    <p *ngIf="this.email?.errors?.['required']">Email Necessario</p>
+                    <p *ngIf="this.email?.errors?.['email']">Email deve ser válido.</p>
+                </div>
             </div>
 
             <div class="form-group mb-3">
                 <label for="funcao" class="form-label">Função</label>
                 <input class="form-control" formControlName="funcao" id="funcao" name="funcao"
-                    placeholder="Digite o funcao do Funcionario" type="text">
+                    placeholder="Digite o funcao do Funcionario" type="text"
+                    [ngClass]="(funcao?.invalid && (funcao?.dirty || funcao?.valueChanges))? 'is-invalid':'is-valid'">
+
+                <div class="invalid-feedback" *ngIf="funcao?.invalid && (funcao?.dirty || funcao?.valueChanges)">
+                    <p *ngIf="this.funcao?.errors?.['required']">Funcao Necessario</p>
+                    <p *ngIf="this.funcao?.errors?.['minlength']">Funcao Deve possuir no minimo 5 letras</p>
+                </div>
             </div>
 
             <div class="form-group mb-3">
                 <label for="departamentoId" class="form-label">Departamento</label>
 
-                <ng-select formControlName="departamentoId" [clearable]="false" [searchable]="false">
-                    <ng-option *ngFor="let departamento of (departamentos$ | async)" [value]="departamento.id" >
+                <ng-select formControlName="departamentoId" class="is-invalid" [clearable]="false" [searchable]="false"
+                [ngClass]="(departamentoId?.invalid && (departamentoId?.dirty || departamentoId?.valueChanges))? 'is-invalid':'is-valid'">
+
+                    <ng-option *ngFor="let departamento of (departamentos$ | async)" [value]="departamento.id">
                         {{ departamento.nome }}
                     </ng-option>
                 </ng-select>
+                <div class="invalid-feedback"
+                    *ngIf="departamentoId?.invalid && (departamentoId?.dirty || departamentoId?.valueChanges)">
+                    <p *ngIf="this.departamentoId?.errors?.['required']">Departamento Necessario</p>
+                </div>
 
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-primary col-md-3"
                     (click)="modal.dismiss('fechar')">Cancelar</button>
-                <button type="submit" class="btn btn-primary col-md-3">Gravar</button>
+                <button type="submit" class="btn btn-primary col-md-3" [disabled]="this.form.invalid">Gravar</button>
             </div>
         </form>
 

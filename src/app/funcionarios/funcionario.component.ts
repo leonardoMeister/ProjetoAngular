@@ -22,7 +22,7 @@ export class FuncionarioComponent implements OnInit {
 
     constructor(
         private funcionarioService: FuncionarioService,
-        private departamentoService:DepartamentoService,
+        private departamentoService: DepartamentoService,
         private fb: FormBuilder,
         private modalService: NgbModal,
         private currencyPipe: CurrencyPipe,
@@ -33,10 +33,10 @@ export class FuncionarioComponent implements OnInit {
         this.funcionarios$ = this.funcionarioService.selecionarTodos();
         this.form = this.fb.group({
             id: new FormControl(""),
-            nome: new FormControl("", Validators.required),
-            email: new FormControl(""),
-            funcao: new FormControl(""),
-            departamentoId: new FormControl(""),
+            nome: new FormControl("", [Validators.required,Validators.minLength(3)]),
+            email: new FormControl("",[Validators.required, Validators.email]),
+            funcao: new FormControl("",[Validators.required, Validators.minLength(5)]),
+            departamentoId: new FormControl("",Validators.required),
             departamento: new FormControl("")
         })
         this.funcionarios$ = this.funcionarioService.selecionarTodos();
@@ -73,28 +73,36 @@ export class FuncionarioComponent implements OnInit {
                 if (funcionario) await this.funcionarioService.editar(this.form.value);
                 else await this.funcionarioService.inserir(this.form.value);
 
-                this.toastr.success("Registro Salvo.", "Success",
-                    {
-                        timeOut: 2000,
-                        closeButton: true,
-                        disableTimeOut: false,
-                        tapToDismiss: true,
-                        progressBar: true
-                    })
+                this.menssagemSucesso();
             } else {
-                this.toastr.warning("Não foi possival salvar o registro.", "Falha",
-                    {
-                        timeOut: 2000,
-                        closeButton: true,
-                        disableTimeOut: false,
-                        tapToDismiss: true,
-                        progressBar: true
-                    })
+                this.menssagemErro();
             }
 
         } catch (err) {
-            console.log(err);
+            this.menssagemErro();
         }
+    }
+
+    private menssagemSucesso() {
+        this.toastr.success("Registro Salvo.", "Success",
+            {
+                timeOut: 2000,
+                closeButton: true,
+                disableTimeOut: false,
+                tapToDismiss: true,
+                progressBar: true
+            });
+    }
+
+    private menssagemErro() {
+        this.toastr.warning("Não foi possival salvar o registro.", "Falha",
+            {
+                timeOut: 2000,
+                closeButton: true,
+                disableTimeOut: false,
+                tapToDismiss: true,
+                progressBar: true
+            });
     }
 
     public excluir(funcionario: Funcionario) {
