@@ -89,31 +89,59 @@
             <div class="form-group mb-3">
                 <label for="nome" class="form-label">Nome do equipamento</label>
                 <input class="form-control" formControlName="nome" id="nome" name="nome"
-                    placeholder="Digite o nome do equipamento" type="text">
+                    placeholder="Digite o nome do equipamento" type="text"
+                    [ngClass]="(nome?.invalid && (nome?.dirty || nome?.valueChanges))? 'is-invalid':'is-valid'">
+
+                <div class="invalid-feedback" *ngIf="nome?.invalid && (nome?.dirty || nome?.valueChanges)">
+                    <p *ngIf="this.nome?.errors?.['required']">Nome Necessario</p>
+                    <p *ngIf="this.nome?.errors?.['minlength']">Nome Deve possuir no minimo 3 letras</p>
+                </div>
             </div>
 
             <div class="form-group mb-3">
                 <label for="numeroSerie" class="form-label">Numero Serie.</label>
                 <input class="form-control" formControlName="numeroSerie" id="numeroSerie" name="numeroSerie"
-                    placeholder="Digite o Numero Serie." type="text">
+                    placeholder="Digite o Numero Serie." type="text"
+                    [ngClass]="(numeroSerie?.invalid && (numeroSerie?.dirty || numeroSerie?.valueChanges))? 'is-invalid':'is-valid'">
+
+                <div class="invalid-feedback"
+                    *ngIf="numeroSerie?.invalid && (numeroSerie?.dirty || numeroSerie?.valueChanges)">
+                    <p *ngIf="this.numeroSerie?.errors?.['required']">Numero Serie Necessario</p>
+                    <p *ngIf="this.numeroSerie?.errors?.['minlength']">Numero Serie Deve possuir no minimo 5 letras</p>
+                </div>
             </div>
 
             <div class="form-group mb-3">
                 <label for="preco" class="form-label">Preço do equipamento</label>
-                <input matInput class="form-control" formControlName="preco" id="preco" name="preco">
+                <input matInput class="form-control" formControlName="preco" id="preco" name="preco" placeholder="Digite o valor."
+                    [ngClass]="(preco?.invalid && (preco?.dirty || preco?.valueChanges))? 'is-invalid':'is-valid'">
+
+                <div class="invalid-feedback" *ngIf="preco?.invalid && (preco?.dirty || preco?.valueChanges)">
+                    <p *ngIf="this.preco?.errors?.['required']">Preco Necessario</p>
+                </div>
             </div>
 
             <div class="form-group mb-3">
                 <label for="dataFabricacao" class="form-label">Data Fabricacao do equipamento</label>
                 <input class="form-control" formControlName="dataFabricacao" id="dataFabricacao" name="dataFabricacao"
-                    type="date">
+                    type="date"
+                    [ngClass]="(dataFabricacao?.invalid && (dataFabricacao?.dirty || dataFabricacao?.valueChanges))? 'is-invalid':'is-valid'">
+
+                <div class="invalid-feedback" *ngIf="dataFabricacao?.invalid && (dataFabricacao?.dirty || dataFabricacao?.valueChanges)">
+                    <p *ngIf="this.dataFabricacao?.errors?.['required']">Data Fabricacao Necessario</p>
+                </div>
             </div>
 
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-primary col-md-3"
                     (click)="modal.dismiss('fechar')">Cancelar</button>
-                <button type="submit" class="btn btn-primary col-md-3">Gravar</button>
+
+                    <button
+                    type="submit"
+                    class="btn btn-primary col-md-3"
+                    [disabled]="this.form.invalid"
+                    >Gravar</button>
             </div>
         </form>
 

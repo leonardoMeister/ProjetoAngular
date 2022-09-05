@@ -29,10 +29,10 @@ export class EquipamentoComponent implements OnInit {
         this.equipamentos$ = this.equipamentoService.selecionarTodos();
         this.form = this.fb.group({
             id: new FormControl(""),
-            nome: new FormControl("", Validators.required),
-            numeroSerie: new FormControl(""),
+            nome: new FormControl("", [Validators.required, Validators.minLength(3)]),
+            numeroSerie: new FormControl("",[Validators.required, Validators.minLength(5)]),
             preco: ['', Validators.required],
-            dataFabricacao: new FormControl("")
+            dataFabricacao: new FormControl("", Validators.required)
         })
 
         //user pipe to display currency
@@ -41,7 +41,7 @@ export class EquipamentoComponent implements OnInit {
                 this.form.patchValue({
                     preco: this.currencyPipe.
 
-                    transform(myForm.preco.replace(/\D/g, '').replace(/^0+/, ''), 'BRL', 'symbol', '1.0-0')
+                        transform(myForm.preco.replace(/\D/g, '').replace(/^0+/, ''), 'BRL', 'symbol', '1.0-0')
                 }, { emitEvent: false });
             }
         });
@@ -68,30 +68,37 @@ export class EquipamentoComponent implements OnInit {
                 if (equipamento) await this.equipamentoService.editar(this.form.value);
                 else await this.equipamentoService.inserir(this.form.value);
 
-                this.toastr.success("Registro Salvo.", "Success",
-                    {
-                        timeOut: 2000,
-                        closeButton: true,
-                        disableTimeOut: false,
-                        tapToDismiss: true,
-                        progressBar: true
-                    })
+                this.mensagemSucesso();
             } else {
-                this.toastr.warning("Não foi possival salvar o registro.", "Falhar",
-                    {
-                        timeOut: 2000,
-                        closeButton: true,
-                        disableTimeOut: false,
-                        tapToDismiss: true,
-                        progressBar: true
-                    })
+                this.menssagemErro();
             }
 
         } catch (err) {
-            console.log(err);
+            this.menssagemErro();
         }
+    }
+    private mensagemSucesso() {
+        this.toastr.success("Registro Salvo.", "Success",
+            {
+                timeOut: 2000,
+                closeButton: true,
+                disableTimeOut: false,
+                tapToDismiss: true,
+                progressBar: true
+            })
     }
     public excluir(equipamento: Equipamento) {
         this.equipamentoService.excluir(equipamento);
+    }
+
+    private menssagemErro() {
+        this.toastr.warning("Não foi possival salvar o registro.", "Falhar",
+            {
+                timeOut: 2000,
+                closeButton: true,
+                disableTimeOut: false,
+                tapToDismiss: true,
+                progressBar: true
+            })
     }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { Departamento } from './models/departamento.model';
 import { DepartamentoService } from './services/departamento.service';
@@ -14,9 +15,12 @@ export class DepartamentoComponent implements OnInit {
     public departamentos$: Observable<Departamento[]>;
     public form: FormGroup;
 
-    constructor(private departamentoService: DepartamentoService,
+    constructor(
+        private departamentoService: DepartamentoService,
         private fb: FormBuilder,
-        private modalService: NgbModal) {
+        private modalService: NgbModal,
+        private toastr: ToastrService
+    ) {
 
     }
 
@@ -61,17 +65,41 @@ export class DepartamentoComponent implements OnInit {
                 if (departamento) await this.departamentoService.editar(this.form.value);
                 else await this.departamentoService.inserir(this.form.value);
 
-                console.log("O departamento foi salvo com sucesso!");
-            }else{
-                
+                this.mensagemSucesso();
+            } else {
+                this.mensagemErro();
             }
 
 
         } catch (err) {
-
+            this.mensagemErro();
         }
     }
+
+
     public excluir(registro: Departamento) {
         this.departamentoService.excluir(registro);
     }
+
+    private mensagemErro() {
+        this.toastr.warning("Não foi possival salvar o registro.", "Falhar",
+            {
+                timeOut: 2000,
+                closeButton: true,
+                disableTimeOut: false,
+                tapToDismiss: true,
+                progressBar: true
+            })
+    }
+    private mensagemSucesso() {
+        this.toastr.success("Registro Salvo.", "Success",
+        {
+            timeOut: 2000,
+            closeButton: true,
+            disableTimeOut: false,
+            tapToDismiss: true,
+            progressBar: true
+        })
+    }
+
 }
