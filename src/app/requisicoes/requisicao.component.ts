@@ -101,14 +101,8 @@ export class RequisicaoComponent implements OnInit {
             await this.modalService.open(modal).result;
 
             if (this.form.valid) {
-                let le = this.pegarDadosRequisicaoCriacaoNovo()
-
-                console.log(le)
-                console.log(this.form.value)
-
-
                 if (requisicao) await this.requisicoesService.editar(this.pegarDadosRequisicaoEdicao(requisicao));
-                else await this.requisicoesService.inserir(le)
+                else await this.requisicoesService.inserir(this.pegarDadosRequisicaoCriacaoNovo())
                 this.menssagemSucesso();
 
             } else {
@@ -127,7 +121,6 @@ export class RequisicaoComponent implements OnInit {
             this.funcionarioService.selecionarFuncionariologado(email)
                 .subscribe(funcionario => {
                     this.funcionarioLogado = funcionario;
-
 
                 })
 
