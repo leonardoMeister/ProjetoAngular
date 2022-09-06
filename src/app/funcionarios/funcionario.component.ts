@@ -33,7 +33,6 @@ export class FuncionarioComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.funcionarios$ = this.funcionarioService.selecionarTodos();
         this.form = this.fb.group({
             funcionario: new FormGroup({
                 id: new FormControl(""),
@@ -43,12 +42,20 @@ export class FuncionarioComponent implements OnInit {
                 departamentoId: new FormControl("", Validators.required),
                 departamento: new FormControl("")
             }),
-            senha: new FormControl("", [Validators.required, Validators.minLength(8)])
+            senha: new FormControl("")
         });
+
         this.funcionarios$ = this.funcionarioService.selecionarTodos();
+        
         this.departamentos$ = this.departamentoService.selecionarTodos();
     }
+    public removerSenha(){
+        this.senha?.removeValidators([Validators.required, Validators.minLength(8)])
+    }
 
+    public adicionarSenha(){
+        this.senha?.addValidators([Validators.required, Validators.minLength(8)])
+    }
 
 
     get id() { return this.form.get('funcionario.id') }
@@ -69,11 +76,13 @@ export class FuncionarioComponent implements OnInit {
                 ...funcionario,
                 departamento
             }
-
             this.form.get("funcionario")?.setValue(funcionarioDepartamento);
-        }
+            this.removerSenha();
+        }else this.adicionarSenha();
 
         try {
+
+
             await this.modalService.open(modal).result;
 
             if (this.form.valid) {

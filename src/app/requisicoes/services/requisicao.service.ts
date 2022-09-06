@@ -1,40 +1,36 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
-import { map, Observable } from 'rxjs';
+import { map, Observable, Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { Departamento } from 'src/app/departamentos/models/departamento.model';
 import { Equipamento } from 'src/app/equipamentos/models/equipamento.model';
 import { Funcionario } from 'src/app/funcionarios/models/funcionario.model';
+import { FuncionarioService } from 'src/app/funcionarios/services/funcionario.service';
 import { Requisicao } from '../models/requisicao.model';
 
 @Injectable({
     providedIn: 'root'
 })
-export class RequisicaoService {
+export class RequisicaoService  {
 
     registros: AngularFirestoreCollection<Requisicao>;
 
     constructor(
         private firestore: AngularFirestore,
-        private authService: AuthenticationService
+        private authService: AuthenticationService,
+        private funcionarioService: FuncionarioService
     ) {
         this.registros = this.firestore.collection<Requisicao>("requisicoes");
     }
+    private funcionarioLogado:Funcionario;
 
     public selecionarTodos(): Observable<Requisicao[]> {
+
 
         return this.registros.valueChanges()
 
             .pipe(
-                map( (requisicoes: Requisicao[]) => {
-                    let idUsuario: string | undefined;
-
-                    this.authService.usuarioLogado.subscribe(x => {
-                        idUsuario = x?.uid;
-                    })
-
-                    alert(idUsuario);
-
+                map((requisicoes: Requisicao[]) => {
 
                     requisicoes.forEach(requisicao => {
 
@@ -56,8 +52,20 @@ export class RequisicaoService {
                             .valueChanges()
                             .subscribe(x => requisicao.equipamento = x);
                     });
+                    let valorSalvo;
 
-                    return requisicoes.filter(x => x.funcionarioId == idUsuario);
+                    this.authService.usuarioLogado.subscribe(x => {
+                        valorSalvo = x?.uid;
+                        return valorSalvo
+                    });
+
+                    let email;
+
+                    let aux = this.authService.usuarioLogado.subscribe((x) => {
+                        email = x?.email;
+                    });
+
+                    return requisicoes;
                 })
 
             );

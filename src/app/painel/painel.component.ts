@@ -20,6 +20,7 @@ export class PainelComponent implements OnInit, OnDestroy {
     }
     ngOnDestroy(): void {
         this.usuarioLogado$.unsubscribe();
+        alert(this.emailUsuario)
     }
 
     ngOnInit(): void {
@@ -27,6 +28,7 @@ export class PainelComponent implements OnInit, OnDestroy {
             this.emailUsuario = x?.email;
             this.leo = x?.uid;
         })
+
     }
 
     public sair() {
