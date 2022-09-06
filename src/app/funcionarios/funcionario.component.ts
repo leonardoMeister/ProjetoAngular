@@ -46,7 +46,7 @@ export class FuncionarioComponent implements OnInit {
         });
 
         this.funcionarios$ = this.funcionarioService.selecionarTodos();
-        
+
         this.departamentos$ = this.departamentoService.selecionarTodos();
     }
     public removerSenha(){

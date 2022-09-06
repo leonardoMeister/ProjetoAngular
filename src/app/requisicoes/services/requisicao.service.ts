@@ -10,7 +10,7 @@ import { Requisicao } from '../models/requisicao.model';
 @Injectable({
     providedIn: 'root'
 })
-export class RequisicaoService  {
+export class RequisicaoService {
 
     registros: AngularFirestoreCollection<Requisicao>;
 
@@ -20,7 +20,7 @@ export class RequisicaoService  {
     ) {
         this.registros = this.firestore.collection<Requisicao>("requisicoes");
     }
-    private funcionarioLogado:Funcionario;
+    private funcionarioLogado: Funcionario;
 
     public selecionarTodos(): Observable<Requisicao[]> {
 
@@ -43,12 +43,12 @@ export class RequisicaoService  {
                             .doc(requisicao.funcionarioId)
                             .valueChanges()
                             .subscribe(x => requisicao.funcionario = x);
-
-                        this.firestore
-                            .collection<Equipamento>("equipamentos")
-                            .doc(requisicao.equipamentoId)
-                            .valueChanges()
-                            .subscribe(x => requisicao.equipamento = x);
+                        if (requisicao.equipamentoId)
+                            this.firestore
+                                .collection<Equipamento>("equipamentos")
+                                .doc(requisicao.equipamentoId)
+                                .valueChanges()
+                                .subscribe(x => requisicao.equipamento = x);
                     });
                     let valorSalvo;
 
@@ -59,9 +59,10 @@ export class RequisicaoService  {
 
                     let email;
 
-                    let aux = this.authService.usuarioLogado.subscribe((x) => {
+                    this.authService.usuarioLogado.subscribe((x) => {
                         email = x?.email;
                     });
+
                     return requisicoes;
 
                 })
@@ -74,12 +75,15 @@ export class RequisicaoService  {
             return Promise.reject("item invalido");
         }
         const res = await this.registros.add(registro);
+
         registro.id = res.id;
+
         this.registros.doc(res.id).set(registro);
+
     }
 
-    public async editar(registro: Requisicao): Promise<void> {
-        return this.registros.doc(registro.id)
+    public async editar(registro: Requisicao | undefined): Promise<void> {
+        if (registro != null) return this.registros.doc(registro.id)
             .set(registro);
     }
 

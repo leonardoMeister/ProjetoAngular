@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -23,6 +24,7 @@ export class RequisicaoComponent implements OnInit {
     public departamentos$: Observable<Departamento[]>;
     public equipamentos$: Observable<Equipamento[]>;
     public requisicoes$: Observable<Requisicao[]>;
+    public funcionarioLogado: Funcionario;
 
     public form: FormGroup;
 
@@ -75,7 +77,6 @@ export class RequisicaoComponent implements OnInit {
     get equipamento() { return this.form.get('equipamento') }
     get tituloModal() { return (this.id?.value) ? "Atualização" : "Cadastro"; }
 
-    public funcionarioLogado: Funcionario;
 
     public async gravar(modal: TemplateRef<any>, requisicao?: Requisicao) {
         this.form.reset();
@@ -97,68 +98,62 @@ export class RequisicaoComponent implements OnInit {
         }
 
         try {
-
-            this.pegarRegistroFuncionario();
             await this.modalService.open(modal).result;
 
-
-
             if (this.form.valid) {
+                let le = this.pegarDadosRequisicaoCriacaoNovo()
 
-                const requisicaoFinal = this.pegarDadosRequisicao();
+                console.log(le)
+                console.log(this.form.value)
 
-                if (requisicao) await this.requisicoesService.editar(requisicaoFinal);
-                else this.requisicoesService.inserir(requisicaoFinal)
 
+                if (requisicao) await this.requisicoesService.editar(this.pegarDadosRequisicaoEdicao(requisicao));
+                else await this.requisicoesService.inserir(le)
                 this.menssagemSucesso();
+
             } else {
                 this.menssagemErro();
             }
-
         } catch (err) {
+            console.log(err);
             this.menssagemErro();
         }
     }
-    private emailOficial?: string | null | undefined;
 
     public obterFuncionarioLogado() {
 
         this.authService.usuarioLogado.subscribe(dados => {
             let email = dados?.email;
-            this.emailOficial = email;
             this.funcionarioService.selecionarFuncionariologado(email)
                 .subscribe(funcionario => {
                     this.funcionarioLogado = funcionario;
 
-                    this.requisicoes$ = this.requisicoesService.selecionarTodos()
-                        .pipe(
-                            map(requisicao => {
-                                return requisicao.filter(x => x.funcionario?.email === this.funcionarioLogado.email);
-                            })
-                        )
+
                 })
 
         });
 
     }
-    pegarRegistroFuncionario() {
-        alert("funcio")
-        alert(this.funcionarioLogado.email)
-        alert(this.emailOficial)
 
+
+    pegarDadosRequisicaoCriacaoNovo(): Requisicao {
+        let resultado = this.form.value
+        resultado.funcionarioId = this.funcionarioLogado.id;
+        resultado.dataAbertura = new Date(Date.now()).toLocaleDateString();
+        return resultado;
     }
 
 
-    pegarDadosRequisicao(): Requisicao {
-        const dados = this.form.value;
+    pegarDadosRequisicaoEdicao(requisicao: Requisicao | undefined): Requisicao|undefined {
+        const dados = this.form;
+        if (requisicao != null) {
+            requisicao.departamentoId = dados.get('departamentoId')?.value;
+            requisicao.descricao = dados.get('descricao')?.value
+            requisicao.equipamentoId = dados.get('equipamentoId')?.value
+            return requisicao;
+        }
 
-        const data = new Date(Date.now());
-
-        const funcionario = this.pegarRegistroFuncionario();
-        console.log(funcionario)
-
-
-        return dados;
+        return undefined;
     }
 
 
