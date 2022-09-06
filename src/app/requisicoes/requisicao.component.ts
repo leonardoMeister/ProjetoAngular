@@ -75,7 +75,7 @@ export class RequisicaoComponent implements OnInit {
     get equipamento() { return this.form.get('equipamento') }
     get tituloModal() { return (this.id?.value) ? "Atualização" : "Cadastro"; }
 
-    private funcionarioLogado: Funcionario;
+    public funcionarioLogado: Funcionario;
 
     public async gravar(modal: TemplateRef<any>, requisicao?: Requisicao) {
         this.form.reset();
@@ -130,7 +130,12 @@ export class RequisicaoComponent implements OnInit {
                 .subscribe(funcionario => {
                     this.funcionarioLogado = funcionario;
 
-
+                    this.requisicoes$ = this.requisicoesService.selecionarTodos()
+                        .pipe(
+                            map(requisicao => {
+                                return requisicao.filter(x => x.funcionario?.email === this.funcionarioLogado.email);
+                            })
+                        )
                 })
 
         });

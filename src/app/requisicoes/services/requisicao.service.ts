@@ -5,7 +5,6 @@ import { AuthenticationService } from 'src/app/auth/services/authentication.serv
 import { Departamento } from 'src/app/departamentos/models/departamento.model';
 import { Equipamento } from 'src/app/equipamentos/models/equipamento.model';
 import { Funcionario } from 'src/app/funcionarios/models/funcionario.model';
-import { FuncionarioService } from 'src/app/funcionarios/services/funcionario.service';
 import { Requisicao } from '../models/requisicao.model';
 
 @Injectable({
@@ -18,7 +17,6 @@ export class RequisicaoService  {
     constructor(
         private firestore: AngularFirestore,
         private authService: AuthenticationService,
-        private funcionarioService: FuncionarioService
     ) {
         this.registros = this.firestore.collection<Requisicao>("requisicoes");
     }
@@ -64,8 +62,8 @@ export class RequisicaoService  {
                     let aux = this.authService.usuarioLogado.subscribe((x) => {
                         email = x?.email;
                     });
-
                     return requisicoes;
+
                 })
 
             );
