@@ -27,8 +27,13 @@ const routes: Routes = [
         loadChildren: () => import("./equipamentos/equipamento.module")
             .then(m => m.EquipamentoModule),
         canActivate: [AuthGuard]
+    },
+    {
+        path: "requisicoes",
+        loadChildren: () => import("./requisicoes/requisicao.module")
+            .then(m => m.RequisicaoModule),
+        canActivate: [AuthGuard]
     }
-
 
 ];
 
