@@ -122,6 +122,13 @@ export class RequisicaoComponent implements OnInit {
                 .subscribe(funcionario => {
                     this.funcionarioLogado = funcionario;
 
+                    this.requisicoes$ = this.requisicoesService.selecionarTodos()
+                    .pipe(
+                        map(requisicao => {
+                            return requisicao.filter(x => x.funcionario?.email === this.funcionarioLogado.email);
+                        })
+                    )
+
                 })
 
         });
