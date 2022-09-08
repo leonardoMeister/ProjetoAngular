@@ -4,11 +4,11 @@
 
             <div class="btn-group">
 
-                <button class="btn btn-outline-primary" aria-current="page">
+                <button class="btn btn-outline-primary" aria-current="page" routerLink="/requisicoes/funcionario" routerLinkActive="active">
                     <i class="pi pi-ticket me-1"></i>Minhas Requisições
                 </button>
 
-                <button class="btn btn-outline-primary">
+                <button class="btn btn-outline-primary" routerLink="/requisicoes/departamento" routerLinkActive="active">
                     <i class="pi pi-inbox me-1"></i>
                     Requisições Departamento
                 </button>
@@ -19,147 +19,4 @@
 </div>
 
 
-<div class="container">
-    <div class="row">
-        <div class="col-12 col-md-10 col-lg-11 ms-auto">
-
-            <div class="text-center text-md-start">
-                <h1 class="fw-bold text-primary">Requisições</h1>
-
-                <div class="d-grip d-md-block gap-2">
-
-                    <button type="button" class="btn btn-primary me-md-1 col-md-2 mt-4s" (click)="gravar(modal)">
-                        <i class="pi pi-user-plus me-2"></i>Novo
-                    </button>
-                    <a role="button" class=" btn btn-outline-primary col-md-2" routerLink="/painel">
-                        <i class="pi pi-sign-out me-2"> </i>Voltar
-                    </a>
-
-                </div>
-
-            </div>
-
-            <div class="mt-4">
-                <table class="table table-light table-striped table-hover">
-
-                    <thead class="thead-dark text-center">
-                        <tr>
-                            <th>Data</th>
-                            <th>Departamento</th>
-                            <th>Descricao</th>
-                            <th>Equipamento</th>
-                            <th>Funcionario</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-
-                    <tbody class="text-center">
-
-                        <tr *ngFor="let requisicao of(requisicoes$ | async)">
-                            <td>{{ requisicao.dataAbertura }}</td>
-                            <td>{{ requisicao.departamento?.nome }}</td>
-                            <td>{{ requisicao.descricao}}</td>
-                            <td>{{ requisicao.equipamento?.nome}}</td>
-                            <td>{{ requisicao.funcionario?.nome}}</td>
-
-                            <td class="d-grid d-md-block ">
-
-                                <button type="button" class="btn btn-primary me-0 me-md-1 mb-1 mb-md-auto"
-                                    (click)="gravar(modal, requisicao)">
-                                    <i class="pi pi-user-edit"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-danger " (click)="excluir(requisicao)">
-                                    <i class="pi pi-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<ng-template #modal let-modal>
-
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">{{ tituloModal }} de requisicoes</h4>
-        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('fechar')"></button>
-    </div>
-    <div class="modal-body">
-
-        <form [formGroup]="form" (ngSubmit)="modal.close('gravar')">
-
-            <div class="form-group mb-3">
-                <label for="departamentoId" class="form-label">Departamento</label>
-
-                <ng-select formControlName="departamentoId" class="is-invalid" [clearable]="false" [searchable]="false"
-                    [ngClass]="(departamentoId?.invalid && (departamentoId?.dirty || departamentoId?.valueChanges))? 'is-invalid':'is-valid'">
-
-                    <ng-option *ngFor="let departamento of (departamentos$ | async)" [value]="departamento.id">
-                        {{ departamento.nome }}
-                    </ng-option>
-                </ng-select>
-                <div class="invalid-feedback"
-                    *ngIf="departamentoId?.invalid && (departamentoId?.dirty || departamentoId?.valueChanges)">
-                    <p *ngIf="this.departamentoId?.errors?.['required']">Departamento Necessario</p>
-                </div>
-            </div>
-
-            <div class="form-group mb-3">
-                <label for="descricao" class="form-label">Descricao</label>
-                <input class="form-control" formControlName="descricao" id="descricao" name="descricao"
-                    placeholder="Digite a descricao do Funcionario" type="text"
-                    [ngClass]="(descricao?.invalid && (descricao?.dirty || descricao?.valueChanges))? 'is-invalid':'is-valid'">
-
-                <div class="invalid-feedback"
-                    *ngIf="descricao?.invalid && (descricao?.dirty || descricao?.valueChanges)">
-                    <p *ngIf="this.descricao?.errors?.['required']">descricao eh Necessaria</p>
-                    <p *ngIf="this.descricao?.errors?.['minlength']">descricao Deve possuir no minimo 10 letras</p>
-                    <p *ngIf="this.descricao?.errors?.['maxlength']">descricao Deve possuir no maximo 40 letras</p>
-                </div>
-            </div>
-
-            <div class="form-group mb-3">
-                <label for="equipamentoId" class="form-label">Equipamento</label>
-
-                <ng-select formControlName="equipamentoId" class="is-invalid" [clearable]="false" [searchable]="false"
-                    [ngClass]="(equipamentoId?.invalid && (equipamentoId?.dirty || equipamentoId?.valueChanges))? 'is-invalid':'is-valid'">
-
-                    <ng-option *ngFor="let equipamento of (equipamentos$ | async)" [value]="equipamento.id">
-                        {{ equipamento.nome }}
-                    </ng-option>
-                </ng-select>
-            </div>
-
-
-
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-primary col-md-3"
-                    (click)="modal.dismiss('fechar')">Cancelar</button>
-
-                <button type="submit" class="btn btn-primary col-md-3" [disabled]="this.form.invalid">Gravar</button>
-            </div>
-        </form>
-
-
-    </div>
-
-
-</ng-template>
+<router-outlet></router-outlet>
