@@ -139,6 +139,7 @@ export class RequisicoesFuncionarioComponent implements OnInit {
     pegarDadosRequisicaoCriacaoNovo(): Requisicao {
         let resultado = this.form.value
         resultado.funcionarioId = this.funcionarioLogado.id;
+        resultado.funcionario = this.funcionarioLogado;
         resultado.dataAbertura = new Date(Date.now()).toLocaleDateString();
         return resultado;
     }
