@@ -23,11 +23,12 @@
 
                     <thead class="thead-dark text-center">
                         <tr>
-                            <th>Data</th>
-                            <th>Departamento</th>
+                            <th>Abertura</th>
+                            <th>Ultima Att</th>
                             <th>Descricao</th>
-                            <th>Equipamento</th>
-                            <th>Funcionario</th>
+                            <th>Departamento</th>
+                            <th>Status</th>
+                            <th>Movimentações</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -36,11 +37,11 @@
 
                         <tr *ngFor="let requisicao of(requisicoes$ | async)">
                             <td>{{ requisicao.dataAbertura }}</td>
-                            <td>{{ requisicao.departamento?.nome }}</td>
+                            <td>{{ requisicao.ultimaAtualizacao }}</td>
                             <td>{{ requisicao.descricao}}</td>
-                            <td>{{ requisicao.equipamento?.nome}}</td>
-                            <td>{{ requisicao.funcionario?.nome}}</td>
-
+                            <td>{{ requisicao.departamento?.nome}}</td>
+                            <td>{{ (requisicao.status)?"Aberta":"Fechada"}}</td>
+                            <td>{{ requisicao.movimentacoes?.length}}</td>
                             <td class="d-grid d-md-block ">
 
                                 <button type="button" class="btn btn-primary me-0 me-md-1 mb-1 mb-md-auto"

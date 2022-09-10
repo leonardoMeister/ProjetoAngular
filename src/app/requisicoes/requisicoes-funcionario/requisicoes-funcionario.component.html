@@ -40,7 +40,7 @@
                             <td>{{ requisicao.dataAbertura }}</td>
                             <td>{{ requisicao.departamento?.nome }}</td>
                             <td>{{ requisicao.descricao}}</td>
-                            <td>{{ requisicao.equipamento?.nome}}</td>
+                            <td>{{ (requisicao.equipamento?.nome)? requisicao.equipamento?.nome:"Sem Equipamento." }}</td>
                             <td>{{ requisicao.funcionario?.nome}}</td>
 
                             <td class="d-grid d-md-block ">
