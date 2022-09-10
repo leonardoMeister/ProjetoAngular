@@ -10,6 +10,7 @@ import { Equipamento } from 'src/app/equipamentos/models/equipamento.model';
 import { EquipamentoService } from 'src/app/equipamentos/service/equipamento.service';
 import { Funcionario } from 'src/app/funcionarios/models/funcionario.model';
 import { FuncionarioService } from 'src/app/funcionarios/services/funcionario.service';
+import { Movimentacao } from '../models/movimentacao.model';
 import { Requisicao } from '../models/requisicao.model';
 import { RequisicaoService } from '../services/requisicao.service';
 
@@ -19,7 +20,6 @@ import { RequisicaoService } from '../services/requisicao.service';
 })
 export class RequisicoesFuncionarioComponent implements OnInit {
 
-    public funcionarios$: Observable<Funcionario[]>;
     public departamentos$: Observable<Departamento[]>;
     public equipamentos$: Observable<Equipamento[]>;
     public requisicoes$: Observable<Requisicao[]>;
@@ -42,12 +42,19 @@ export class RequisicoesFuncionarioComponent implements OnInit {
 
     ngOnInit(): void {
         this.requisicoes$ = this.requisicoesService.selecionarTodos();
+        this.equipamentos$ = this.equipamentoService.selecionarTodos();
+        this.departamentos$ = this.departamentoService.selecionarTodos();
+        this.obterFuncionarioLogado();
 
         this.form = this.fb.group({
 
             id: new FormControl(""),
             descricao: new FormControl("", [Validators.required, Validators.minLength(10), Validators.maxLength(40)]),
 
+            status: new FormControl(""),
+            movimentacoes:new FormControl(""),
+            ultimaAtualizacao :new FormControl(""),
+            
             dataAbertura: new FormControl(""),
 
             departamentoId: new FormControl("", Validators.required),
@@ -60,10 +67,7 @@ export class RequisicoesFuncionarioComponent implements OnInit {
             equipamento: new FormControl(""),
         });
 
-        this.equipamentos$ = this.equipamentoService.selecionarTodos();
-        this.funcionarios$ = this.funcionarioService.selecionarTodos();
-        this.departamentos$ = this.departamentoService.selecionarTodos();
-        this.obterFuncionarioLogado();
+
     }
 
     get id() { return this.form.get('id') }
@@ -91,10 +95,12 @@ export class RequisicoesFuncionarioComponent implements OnInit {
                 ...requisicao,
                 departamento,
                 equipamento,
-                funcionario
+                funcionario,
             }
 
             this.form.setValue(requisicaoCompleta);
+            alert("asdasdasd")
+
         }
 
         try {
@@ -141,6 +147,11 @@ export class RequisicoesFuncionarioComponent implements OnInit {
         resultado.funcionarioId = this.funcionarioLogado.id;
         resultado.funcionario = this.funcionarioLogado;
         resultado.dataAbertura = new Date(Date.now()).toLocaleDateString();
+
+        resultado.status = true;
+        resultado.ultimaAtualizacao = resultado.dataAbertura;
+        let aux: Movimentacao[]  = [];
+        resultado.movimentacoes =  aux;
         return resultado;
     }
 
