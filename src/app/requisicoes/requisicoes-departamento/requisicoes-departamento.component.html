@@ -52,19 +52,24 @@
                                 <ng-template [ngIf]="funcionarioLogado.departamentoId == requisicao.departamento?.id">
 
                                     <td>{{ requisicao.dataAbertura }}</td>
-                                    <td>{{ requisicao.ultimaAtualizacao }}</td>
+                                    <td>{{ requisicao.ultimaAtualizacao  }}</td>
                                     <td>{{ requisicao.descricao}}</td>
                                     <td>{{ requisicao.departamento?.nome}}</td>
-                                    <td>{{ (requisicao.status)?"Aberta":"Fechada"}}</td>
+                                    <td>{{ (requisicao.status)}}</td>
                                     <td>{{ requisicao.movimentacoes?.length}}</td>
                                     <td class="d-grid d-md-block ">
 
                                         <button type="button"
-                                            class="btn btn-outline-primary me-0 me-md-1 mb-1 mb-md-auto">
+                                            class="btn btn-outline-primary me-0 me-md-1 mb-1 mb-md-auto"
+                                            (click)="visualizar(modalView, requisicao)"
+                                            >
                                             <i class="pi pi-info-circle"></i>
                                         </button>
 
-                                        <button type="button" class="btn btn-primary me-0 me-md-1 mb-1 mb-md-auto">
+                                        <button type="button"
+                                        class="btn btn-primary me-0 me-md-1 mb-1 mb-md-auto"
+                                        (click)="gravar(modal, requisicao)"
+                                        >
                                             <i class="pi pi-search-plus"></i>
                                         </button>
 
@@ -83,3 +88,113 @@
         </div>
     </div>
 </div>
+
+
+
+
+<ng-template #modal let-modal>
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Atualizacao de Requisições</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('fechar')"></button>
+    </div>
+    <div class="modal-body">
+
+        <form [formGroup]="form" (ngSubmit)="modal.close('gravar')">
+
+            <p class="text-primary fs-5">Funcionario responsável: {{requisicaoAux.funcionario?.nome}}</p>
+
+
+            <div class="form-group mb-3">
+                <label for="solicitacao" class="form-label">Solicitação</label>
+                <input class="form-control" formControlName="solicitacao" id="solicitacao" name="solicitacao"
+                    placeholder="Digite a solicitacao do Funcionario" type="text"
+                    [ngClass]="(solicitacao?.invalid && (solicitacao?.dirty || solicitacao?.valueChanges))? 'is-invalid':'is-valid'">
+
+                <div class="invalid-feedback"
+                    *ngIf="solicitacao?.invalid && (solicitacao?.dirty || solicitacao?.valueChanges)">
+                    <p *ngIf="this.solicitacao?.errors?.['required']">Solicitacao eh Necessaria</p>
+                    <p *ngIf="this.solicitacao?.errors?.['minlength']">Solicitacao Deve possuir no minimo 10 letras</p>
+                    <p *ngIf="this.solicitacao?.errors?.['maxlength']">Solicitacao Deve possuir no maximo 40 letras</p>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="descricao" class="form-label">Descricao</label>
+                <input class="form-control" formControlName="descricao" id="descricao" name="descricao"
+                    placeholder="Digite a descricao do Funcionario" type="text"
+                    [ngClass]="(descricao?.invalid && (descricao?.dirty || descricao?.valueChanges))? 'is-invalid':'is-valid'">
+
+                <div class="invalid-feedback"
+                    *ngIf="descricao?.invalid && (descricao?.dirty || descricao?.valueChanges)">
+                    <p *ngIf="this.descricao?.errors?.['required']">descricao eh Necessaria</p>
+                    <p *ngIf="this.descricao?.errors?.['minlength']">descricao Deve possuir no minimo 10 letras</p>
+                    <p *ngIf="this.descricao?.errors?.['maxlength']">descricao Deve possuir no maximo 40 letras</p>
+                </div>
+            </div>
+
+
+            <div class="form-group mb-3">
+                <label for="status" class="form-label">Status</label>
+
+                <ng-select formControlName="status" class="is-invalid" [clearable]="false" [searchable]="false"
+                    [ngClass]="(false)? 'is-invalid':'is-valid'">
+
+                    <ng-option value="Aberta">
+                        Aberta
+                    </ng-option>
+                    <ng-option value="Processando">
+                        Processando
+                    </ng-option>
+                    <ng-option value="Não autorizada">
+                        Não autorizada
+                    </ng-option>
+                    <ng-option value="Finalizada">
+                        Finalizada
+                    </ng-option>
+                </ng-select>
+
+                <div class="invalid-feedback"
+                    *ngIf="status?.invalid && (status?.dirty || status?.valueChanges)">
+                    <p *ngIf="this.status?.errors?.['required']">Status Necessario</p>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary col-md-3"
+                    (click)="modal.dismiss('fechar')">Cancelar</button>
+
+                <button type="submit" class="btn btn-primary col-md-3" [disabled]="this.form.invalid">Gravar</button>
+            </div>
+        </form>
+
+
+    </div>
+
+
+</ng-template>
+
+
+
+<ng-template #modalView let-modal>
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Atualizacao de Requisições</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('fechar')"></button>
+    </div>
+    <div class="modal-body">
+
+        <h1>Movimentações da Requisição</h1>
+
+    </div>
+
+
+</ng-template>
+

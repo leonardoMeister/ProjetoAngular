@@ -19,6 +19,6 @@ export class Requisicao{
     equipamento?:Equipamento;
 
     movimentacoes?: Movimentacao[];
-    ultimaAtualizacao?: Date;
-    status: boolean;
+    ultimaAtualizacao?: string;
+    status: string;
 }

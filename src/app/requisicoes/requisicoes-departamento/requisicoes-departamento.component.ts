@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Component, OnInit, TemplateRef } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { map, Observable } from 'rxjs';
@@ -23,7 +23,8 @@ export class RequisicoesDepartamentoComponent implements OnInit {
     public requisicoes$: Observable<Requisicao[]>;
     public funcionarioLogado: Funcionario;
     public departamentos$: Observable<Departamento[]>;
-
+    public form: FormGroup;
+    public requisicaoAux:Requisicao;
     public funcioNovo$: Observable<Funcionario>;
 
     constructor(
@@ -38,13 +39,22 @@ export class RequisicoesDepartamentoComponent implements OnInit {
         private requisicoesService: RequisicaoService,
 
     ) { }
-    
+
     ngOnInit(): void {
         this.obterFuncionarioLogado();
         this.requisicoes$ = this.requisicoesService.selecionarTodos();
         this.departamentos$ = this.departamentoService.selecionarTodos();
 
+        this.form = this.fb.group({
+
+            descricao: new FormControl("", [Validators.required, Validators.minLength(10), Validators.maxLength(40)]),
+            status: new FormControl("", Validators.required),
+            solicitacao: new FormControl("",[Validators.required, Validators.minLength(10), Validators.maxLength(40)])
+        });
     }
+    get descricao() { return this.form.get('descricao') }
+    get status() { return this.form.get('status') }
+    get solicitacao() { return this.form.get('solicitacao') }
 
 
     public obterFuncionarioLogado() {
@@ -67,5 +77,64 @@ export class RequisicoesDepartamentoComponent implements OnInit {
 
         });
 
+    }
+    public async visualizar(modal: TemplateRef<any>, requisicao: Requisicao) {
+        try {
+            this.requisicaoAux = requisicao;
+            await this.modalService.open(modal).result;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    public async gravar(modal: TemplateRef<any>, requisicao: Requisicao) {
+        this.form.reset();
+
+        try {
+
+            this.requisicaoAux = requisicao;
+
+            await this.modalService.open(modal).result;
+
+            if (this.form.valid) {
+                this.pegarDadosRequisicaoEdicao(requisicao);
+                await this.requisicoesService.editar(requisicao);
+                this.menssagemSucesso();
+            } else {
+                this.menssagemErro();
+            }
+        } catch (err) {
+            console.log(err);
+            this.menssagemErro();
+        }
+    }
+    pegarDadosRequisicaoEdicao(requisicao: Requisicao) {
+
+        requisicao.ultimaAtualizacao = new Date(Date.now()).toLocaleDateString();
+        requisicao.status = this.status?.value;
+        const resultado = this.form.value
+        requisicao.movimentacoes?.push(resultado)
+    }
+
+
+    private menssagemSucesso() {
+        this.toastr.success("Registro Salvo.", "Success",
+            {
+                timeOut: 2000,
+                closeButton: true,
+                disableTimeOut: false,
+                tapToDismiss: true,
+                progressBar: true
+            });
+    }
+
+    private menssagemErro() {
+        this.toastr.warning("Não foi possival salvar o registro.", "Falha",
+            {
+                timeOut: 2000,
+                closeButton: true,
+                disableTimeOut: false,
+                tapToDismiss: true,
+                progressBar: true
+            });
     }
 }

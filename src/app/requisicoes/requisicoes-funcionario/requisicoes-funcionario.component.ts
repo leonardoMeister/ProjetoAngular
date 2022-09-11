@@ -100,7 +100,6 @@ export class RequisicoesFuncionarioComponent implements OnInit {
             }
 
             this.form.setValue(requisicaoCompleta);
-            alert("asdasdasd")
 
         }
 
@@ -148,7 +147,7 @@ export class RequisicoesFuncionarioComponent implements OnInit {
         resultado.funcionarioId = this.funcionarioLogado.id;
         resultado.funcionario = this.funcionarioLogado;
         resultado.dataAbertura = new Date(Date.now()).toLocaleDateString();
-        resultado.status = true;
+        resultado.status = "Aberta";
         resultado.ultimaAtualizacao = resultado.dataAbertura;
         let aux: Movimentacao[]  = [];
         resultado.movimentacoes =  aux;
