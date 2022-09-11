@@ -61,15 +61,12 @@
 
                                         <button type="button"
                                             class="btn btn-outline-primary me-0 me-md-1 mb-1 mb-md-auto"
-                                            (click)="visualizar(modalView, requisicao)"
-                                            >
+                                            (click)="visualizar(modalView, requisicao)">
                                             <i class="pi pi-info-circle"></i>
                                         </button>
 
-                                        <button type="button"
-                                        class="btn btn-primary me-0 me-md-1 mb-1 mb-md-auto"
-                                        (click)="gravar(modal, requisicao)"
-                                        >
+                                        <button type="button" class="btn btn-primary me-0 me-md-1 mb-1 mb-md-auto"
+                                            (click)="gravar(modal, requisicao)">
                                             <i class="pi pi-search-plus"></i>
                                         </button>
 
@@ -154,8 +151,7 @@
                     </ng-option>
                 </ng-select>
 
-                <div class="invalid-feedback"
-                    *ngIf="status?.invalid && (status?.dirty || status?.valueChanges)">
+                <div class="invalid-feedback" *ngIf="status?.invalid && (status?.dirty || status?.valueChanges)">
                     <p *ngIf="this.status?.errors?.['required']">Status Necessario</p>
                 </div>
             </div>
@@ -191,10 +187,56 @@
     </div>
     <div class="modal-body">
 
-        <h1>Movimentações da Requisição</h1>
+        <p>
+            Descrição: {{requisicaoAux.descricao}}
+        </p>
+        <p>
+            Data Abertura: {{requisicaoAux.dataAbertura}}
+        </p>
+        <p>
+            Funcionário responsável: {{requisicaoAux.funcionario?.nome}}
+        </p>
+        <p *ngIf="requisicaoAux.equipamento">
+            Equipamento: {{requisicaoAux.equipamento.nome}}
+        </p>
+        <p>
+            Departamento: {{requisicaoAux.departamento?.nome}}
+        </p>
+
+        <p>
+            Número movimentações: {{requisicaoAux.movimentacoes?.length}}
+        </p>
+        <p>
+            Status: {{requisicaoAux.status}}
+        </p>
+        <h1 class="fs-5 text-primary mt-4">Movimentações de Requisições</h1>
+
+
+
+        <table class="table table-light table-striped table-hover">
+
+            <thead class="thead-dark text-center">
+                <tr>
+                    <th>Solicitação</th>
+                    <th>Descrição</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody class="text-center">
+                <tr *ngFor="let movimentacao of(requisicaoAux.movimentacoes)">
+
+                    <td>{{ movimentacao.solicitacao }}</td>
+                    <td>{{ movimentacao.descricao  }}</td>
+                    <td>{{ movimentacao.status  }}</td>
+                </tr>
+            </tbody>
+
+        </table>
+
+
 
     </div>
 
 
 </ng-template>
-

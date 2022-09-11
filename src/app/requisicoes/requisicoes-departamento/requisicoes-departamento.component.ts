@@ -79,6 +79,7 @@ export class RequisicoesDepartamentoComponent implements OnInit {
 
     }
     public async visualizar(modal: TemplateRef<any>, requisicao: Requisicao) {
+
         try {
             this.requisicaoAux = requisicao;
             await this.modalService.open(modal).result;
