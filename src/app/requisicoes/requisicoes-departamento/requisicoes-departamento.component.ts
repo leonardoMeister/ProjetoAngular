@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
+import { Departamento } from 'src/app/departamentos/models/departamento.model';
 import { DepartamentoService } from 'src/app/departamentos/services/departamento.service';
 import { EquipamentoService } from 'src/app/equipamentos/service/equipamento.service';
+import { Funcionario } from 'src/app/funcionarios/models/funcionario.model';
 import { FuncionarioService } from 'src/app/funcionarios/services/funcionario.service';
 import { Movimentacao } from '../models/movimentacao.model';
 import { Requisicao } from '../models/requisicao.model';
@@ -19,6 +21,10 @@ export class RequisicoesDepartamentoComponent implements OnInit {
 
 
     public requisicoes$: Observable<Requisicao[]>;
+    public funcionarioLogado: Funcionario;
+    public departamentos$: Observable<Departamento[]>;
+
+    public funcioNovo$: Observable<Funcionario>;
 
     constructor(
         private fb: FormBuilder,
@@ -31,12 +37,35 @@ export class RequisicoesDepartamentoComponent implements OnInit {
         private equipamentoService: EquipamentoService,
         private requisicoesService: RequisicaoService,
 
-        ) { }
-
+    ) { }
+    
     ngOnInit(): void {
+        this.obterFuncionarioLogado();
         this.requisicoes$ = this.requisicoesService.selecionarTodos();
-        let asd: Movimentacao[] = []
-        asd.length
+        this.departamentos$ = this.departamentoService.selecionarTodos();
+
     }
 
+
+    public obterFuncionarioLogado() {
+
+        this.authService.usuarioLogado.subscribe(dados => {
+            let email = dados?.email;
+            this.funcioNovo$ = this.funcionarioService.selecionarFuncionariologado(email);
+            this.funcionarioService.selecionarFuncionariologado(email)
+                .subscribe(funcionario => {
+                    this.funcionarioLogado = funcionario;
+
+                    this.requisicoes$ = this.requisicoesService.selecionarTodos()
+                        .pipe(
+                            map(requisicao => {
+                                return requisicao.filter(x => x.funcionario?.email === this.funcionarioLogado.email);
+                            })
+                        )
+
+                })
+
+        });
+
+    }
 }

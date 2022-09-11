@@ -46,6 +46,7 @@ export class RequisicoesFuncionarioComponent implements OnInit {
         this.departamentos$ = this.departamentoService.selecionarTodos();
         this.obterFuncionarioLogado();
 
+
         this.form = this.fb.group({
 
             id: new FormControl(""),
@@ -54,7 +55,7 @@ export class RequisicoesFuncionarioComponent implements OnInit {
             status: new FormControl(""),
             movimentacoes:new FormControl(""),
             ultimaAtualizacao :new FormControl(""),
-            
+
             dataAbertura: new FormControl(""),
 
             departamentoId: new FormControl("", Validators.required),
@@ -147,11 +148,11 @@ export class RequisicoesFuncionarioComponent implements OnInit {
         resultado.funcionarioId = this.funcionarioLogado.id;
         resultado.funcionario = this.funcionarioLogado;
         resultado.dataAbertura = new Date(Date.now()).toLocaleDateString();
-
         resultado.status = true;
         resultado.ultimaAtualizacao = resultado.dataAbertura;
         let aux: Movimentacao[]  = [];
         resultado.movimentacoes =  aux;
+
         return resultado;
     }
 
