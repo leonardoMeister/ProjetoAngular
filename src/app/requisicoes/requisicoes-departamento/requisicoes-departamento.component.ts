@@ -82,7 +82,7 @@ export class RequisicoesDepartamentoComponent implements OnInit {
 
         try {
             this.requisicaoAux = requisicao;
-            await this.modalService.open(modal).result;
+            await this.modalService.open(modal,{size:"lg"}).result;
         } catch (err) {
             console.log(err);
         }
