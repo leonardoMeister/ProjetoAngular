@@ -1,0 +1,53 @@
+
+<div class="modal-body">
+
+    <p>
+        Descrição: {{requisicaoAux.descricao}}
+    </p>
+    <p>
+        Data Abertura: {{requisicaoAux.dataAbertura}}
+    </p>
+    <p>
+        Funcionário responsável: {{requisicaoAux.funcionario?.nome}}
+    </p>
+    <p *ngIf="requisicaoAux.equipamento">
+        Equipamento: {{requisicaoAux.equipamento.nome}}
+    </p>
+    <p>
+        Departamento: {{requisicaoAux.departamento?.nome}}
+    </p>
+
+    <p>
+        Número movimentações: {{requisicaoAux.movimentacoes?.length}}
+    </p>
+    <p>
+        Status: {{requisicaoAux.status}}
+    </p>
+    <h1 class="fs-5 text-primary mt-4">Movimentações de Requisições</h1>
+
+
+
+    <table class="table table-light table-striped table-hover">
+
+        <thead class="thead-dark text-center">
+            <tr>
+                <th>Solicitação</th>
+                <th>Descrição</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody class="text-center">
+            <tr *ngFor="let movimentacao of(requisicaoAux.movimentacoes)">
+
+                <td>{{ movimentacao.solicitacao }}</td>
+                <td>{{ movimentacao.descricao  }}</td>
+                <td>{{ movimentacao.status  }}</td>
+            </tr>
+        </tbody>
+
+    </table>
+
+
+
+</div>
